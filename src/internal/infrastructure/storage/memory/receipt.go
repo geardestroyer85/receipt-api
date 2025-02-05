@@ -1,7 +1,6 @@
 package memory
 
 import (
-	"context"
 	"errors"
 	"receipt-api/src/internal/domain/entities"
 	"receipt-api/src/internal/domain/repositories"
@@ -19,7 +18,7 @@ func NewMemoryReceiptRepository() repositories.ReceiptRepository {
 	}
 }
 
-func (r *memoryReceiptRepository) Store(ctx context.Context, receipt *entities.Receipt) error {
+func (r *memoryReceiptRepository) Store(receipt *entities.Receipt) error {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
 
@@ -27,7 +26,7 @@ func (r *memoryReceiptRepository) Store(ctx context.Context, receipt *entities.R
 	return nil
 }
 
-func (r *memoryReceiptRepository) FindByID(ctx context.Context, id string) (*entities.Receipt, error) {
+func (r *memoryReceiptRepository) FindByID(id string) (*entities.Receipt, error) {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
 
