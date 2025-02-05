@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"receipt-api/src/internal/config"
+	"receipt-api/src/internal/infrastructure/rest/handlers"
+	"receipt-api/src/internal/infrastructure/rest/router"
 	"receipt-api/src/internal/infrastructure/rest/server"
 )
 
@@ -10,7 +12,10 @@ func main() {
 
 	config := config.LoadConfig()
 
-	server := server.NewServer()
+	receiptHandler := handlers.NewReceiptHandler()
+	router := router.NewRouter()
+
+	server := server.NewServer(router)
 	server.SetupRoutes()
 
 	port := config.AppPort

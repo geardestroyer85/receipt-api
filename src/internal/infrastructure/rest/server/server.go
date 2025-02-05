@@ -12,9 +12,8 @@ type Server struct {
 	router *router.Router
 }
 
-func NewServer() *Server {
+func NewServer(router *router.Router) *Server {
 	engine := gin.New()
-	router := router.NewRouter()
 
 	return &Server{
 		engine: engine,
