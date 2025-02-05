@@ -1,22 +1,22 @@
 package dtos
 
 type ItemDto struct {
-	ShortDescription string
-	Price            string
+	ShortDescription string `json:"shortDescription"`
+	Price            string `json:"price"`
 }
 
 type ProcessReceiptRequestDto struct {
-	Retailer     string
-	PurchaseDate string
-	PurchaseTime string
-	Items        []ItemDto
-	Total        string
+	Retailer     string    `json:"retailer"`
+	PurchaseDate string    `json:"purchaseDate"`
+	PurchaseTime string    `json:"purchaseTime"`
+	Items        []ItemDto `json:"items"`
+	Total        string    `json:"total"`
 }
 
 type ProcessResponseDto struct {
-	ID string
+	ID string `json:"id"`
 }
 
 type GetPointsResponseDto struct {
-	Points int
+	Points int `json:"points"`
 }
