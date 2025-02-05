@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"receipt-api/src/internal/application/services"
+	"receipt-api/src/internal/application/validators"
 	"receipt-api/src/internal/config"
 	"receipt-api/src/internal/infrastructure/rest/handlers"
 	"receipt-api/src/internal/infrastructure/rest/router"
@@ -14,8 +15,10 @@ func main() {
 
 	config := config.LoadConfig()
 
+	validator := validators.NewReceiptValidator()
+
 	receiptRepo := memory.NewMemoryReceiptRepository()
-	receiptService := services.NewReceiptService(receiptRepo)
+	receiptService := services.NewReceiptService(receiptRepo, validator)
 	receiptHandler := handlers.NewReceiptHandler(receiptService)
 
 	router := router.NewRouter(receiptHandler)

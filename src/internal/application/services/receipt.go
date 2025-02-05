@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"receipt-api/src/internal/application/dtos"
+	"receipt-api/src/internal/application/validators"
 	"receipt-api/src/internal/domain/entities"
 	"receipt-api/src/internal/domain/repositories"
 	"strconv"
@@ -16,15 +17,21 @@ import (
 
 type ReceiptService struct {
 	receiptRepo repositories.ReceiptRepository
+	validator   *validators.ReceiptValidator
 }
 
-func NewReceiptService(receiptRepo repositories.ReceiptRepository) *ReceiptService {
+func NewReceiptService(receiptRepo repositories.ReceiptRepository, validator *validators.ReceiptValidator) *ReceiptService {
 	return &ReceiptService{
 		receiptRepo: receiptRepo,
+		validator:   validator,
 	}
 }
 
 func (s *ReceiptService) ProcessReceipt(req *dtos.ProcessReceiptRequestDto) (*dtos.ProcessResponseDto, error) {
+	if err := s.validator.ValidateProcessReceiptRequest(req); err != nil {
+		return nil, err
+	}
+
 	receipt, err := convertToEntity(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to convert to entity: %w", err)
