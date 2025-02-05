@@ -2,11 +2,15 @@ package main
 
 import (
 	"fmt"
+	"receipt-api/src/internal/config"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+
+	config := config.LoadConfig()
+
 	engine := gin.New()
 
 	engine.GET("/", func(c *gin.Context) {
@@ -16,7 +20,8 @@ func main() {
 	})
 
 	fmt.Println("Starting server on port 8080...")
-	if err := engine.Run(":8080"); err != nil {
+	if err := engine.Run(fmt.Sprintf(":%s", config.AppPort)); err != nil {
 		fmt.Printf("Error starting server: %v\n", err)
 	}
+
 }
