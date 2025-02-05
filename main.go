@@ -3,10 +3,80 @@ package main
 import (
 	"fmt"
 	"math"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
 )
+
+type ItemDto struct {
+	ShortDescription string
+	Price            string
+}
+
+type ProcessReceiptRequestDto struct {
+	Retailer     string
+	PurchaseDate string
+	PurchaseTime string
+	Items        []ItemDto
+	Total        string
+}
+
+var testProcessReceiptRequestDto = ProcessReceiptRequestDto{
+	Retailer:     "Target",
+	PurchaseDate: "2022-01-01",
+	PurchaseTime: "13:01",
+	Items: []ItemDto{
+		{
+			ShortDescription: "Mountain Dew 12PK",
+			Price:            "6.49",
+		}, {
+			ShortDescription: "Emils Cheese Pizza",
+			Price:            "12.25",
+		}, {
+			ShortDescription: "Knorr Creamy Chicken",
+			Price:            "1.26",
+		}, {
+			ShortDescription: "Doritos Nacho Cheese",
+			Price:            "3.35",
+		}, {
+			ShortDescription: "   Klarbrunn 12-PK 12 FL OZ  ",
+			Price:            "12.00",
+		},
+	},
+	Total: "35.35",
+}
+
+func convertToEntity(receiptDto *ProcessReceiptRequestDto) (*Receipt, error) {
+	purchaseTime, err := time.Parse("2006-01-02 15:04", receiptDto.PurchaseDate+" "+receiptDto.PurchaseTime)
+	if err != nil {
+		return nil, fmt.Errorf("invalid purchase date/time format: %w", err)
+	}
+
+	total, err := strconv.ParseFloat(receiptDto.Total, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid total amount: %w", err)
+	}
+
+	items := make([]Item, len(receiptDto.Items))
+	for i, itemDto := range receiptDto.Items {
+		price, err := strconv.ParseFloat(itemDto.Price, 64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid price for item %d: %w", i, err)
+		}
+		items[i] = Item{
+			ShortDescription: itemDto.ShortDescription,
+			Price:            price,
+		}
+	}
+
+	return &Receipt{
+		Retailer:     receiptDto.Retailer,
+		PurchaseTime: purchaseTime,
+		Items:        items,
+		Total:        total,
+	}, nil
+}
 
 type Item struct {
 	ShortDescription string
@@ -96,6 +166,27 @@ func calculatePoints(receipt *Receipt) int {
 	return points
 }
 
+func (r *Receipt) Equals(other *Receipt) bool {
+	if r == nil || other == nil {
+		return r == other
+	}
+	if r.Retailer != other.Retailer || !r.PurchaseTime.Equal(other.PurchaseTime) || r.Total != other.Total || len(r.Items) != len(other.Items) {
+		return false
+	}
+	for i, item := range r.Items {
+		if item != other.Items[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func main() {
 	fmt.Println(calculatePoints(&testReceipt))
+	parsedReceipt, err := convertToEntity(&testProcessReceiptRequestDto)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(parsedReceipt.Equals(&testReceipt))
+	fmt.Println(calculatePoints(parsedReceipt))
 }
