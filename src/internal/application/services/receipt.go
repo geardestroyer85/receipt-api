@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"receipt-api/src/internal/application/dtos"
 	"receipt-api/src/internal/domain/entities"
+	"receipt-api/src/internal/domain/repositories"
 	"strconv"
 	"time"
 
@@ -11,10 +12,13 @@ import (
 )
 
 type ReceiptService struct {
+	receiptRepo repositories.ReceiptRepository
 }
 
-func NewReceiptService() *ReceiptService {
-	return &ReceiptService{}
+func NewReceiptService(receiptRepo repositories.ReceiptRepository) *ReceiptService {
+	return &ReceiptService{
+		receiptRepo: receiptRepo,
+	}
 }
 
 func (s *ReceiptService) ProcessReceipt(req *dtos.ProcessReceiptRequestDto) (*dtos.ProcessResponseDto, error) {

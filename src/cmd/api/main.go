@@ -7,16 +7,18 @@ import (
 	"receipt-api/src/internal/infrastructure/rest/handlers"
 	"receipt-api/src/internal/infrastructure/rest/router"
 	"receipt-api/src/internal/infrastructure/rest/server"
+	"receipt-api/src/internal/infrastructure/storage/memory"
 )
 
 func main() {
 
 	config := config.LoadConfig()
 
-	receiptService := services.NewReceiptService()
+	receiptRepo := memory.NewMemoryReceiptRepository()
+	receiptService := services.NewReceiptService(receiptRepo)
 	receiptHandler := handlers.NewReceiptHandler(receiptService)
-	router := router.NewRouter(receiptHandler)
 
+	router := router.NewRouter(receiptHandler)
 	server := server.NewServer(router)
 	server.SetupRoutes()
 
