@@ -31,13 +31,13 @@ This API allows retailers to submit receipts and receive points based on specifi
 
 ## Features
 
-✅ RESTful API endpoints for receipt processing and points retrieval
-✅ In-memory storage with thread-safe operations using mutex locks
-✅ Comprehensive request validation and error handling
-✅ Environment-based configuration management
-✅ Clean architecture following domain-driven design principles
-✅ Separation of concerns with clear layer boundaries
-✅ Type-safe request/response handling
+✅ RESTful API endpoints for receipt processing and points retrieval  
+✅ In-memory storage with thread-safe operations using mutex locks  
+✅ Comprehensive request validation and error handling  
+✅ Environment-based configuration management  
+✅ Clean architecture following domain-driven design principles  
+✅ Separation of concerns with clear layer boundaries  
+✅ Type-safe request/response handling  
 
 ## Requirements
 
