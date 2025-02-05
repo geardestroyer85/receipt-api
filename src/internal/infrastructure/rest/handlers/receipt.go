@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"receipt-api/src/internal/application/dtos"
 	"receipt-api/src/internal/application/services"
+	"receipt-api/src/internal/domain/errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +23,8 @@ func (h *ReceiptHandler) ProcessReceipt(c *gin.Context) {
 	var req dtos.ProcessReceiptRequestDto
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		appErr := errors.NewAppError(errors.ErrInvalidReceiptRequest, "The receipt is invalid.", http.StatusBadRequest)
+		c.JSON(appErr.Code, gin.H{"error": appErr.Error()})
 		return
 	}
 
@@ -42,7 +44,8 @@ func (h *ReceiptHandler) GetPoints(c *gin.Context) {
 	res, err := h.receiptService.GetPoints(id)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		appErr := errors.NewAppError(errors.ErrReceiptNotFound, "No Receipt found for that ID.", http.StatusNotFound)
+		c.JSON(appErr.Code, gin.H{"error": appErr.Error()})
 		return
 	}
 

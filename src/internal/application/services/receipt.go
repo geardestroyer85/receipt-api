@@ -43,8 +43,9 @@ func (s *ReceiptService) ProcessReceipt(req *dtos.ProcessReceiptRequestDto) (*dt
 
 func (s *ReceiptService) GetPoints(id string) (*dtos.GetPointsResponseDto, error) {
 	receipt, err := s.receiptRepo.FindByID(id)
+	fmt.Println(receipt, err)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find receipt: %w", err)
+		return nil, err
 	}
 
 	points := receipt.Points
