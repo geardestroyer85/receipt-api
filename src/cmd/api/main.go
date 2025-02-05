@@ -1,27 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"receipt-api/src/internal/config"
-
-	"github.com/gin-gonic/gin"
+	"receipt-api/src/internal/infrastructure/rest/server"
 )
 
 func main() {
 
 	config := config.LoadConfig()
 
-	engine := gin.New()
+	server := server.NewServer()
+	server.SetupRoutes()
 
-	engine.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello World",
-		})
-	})
-
-	fmt.Println("Starting server on port 8080...")
-	if err := engine.Run(fmt.Sprintf(":%s", config.AppPort)); err != nil {
-		fmt.Printf("Error starting server: %v\n", err)
+	port := config.AppPort
+	if err := server.Start(port); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
 	}
+	log.Printf("Server started on port %s\n", port)
 
 }
